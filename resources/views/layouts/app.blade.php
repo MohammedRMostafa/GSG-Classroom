@@ -1,7 +1,6 @@
 @include('includes.header')
-@include('includes.messages')
+<!-- Page Content -->
 <main>
-    @yield('content')
+    {{ $slot }}
 </main>
-
 @include('includes.footer')

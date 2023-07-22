@@ -8,6 +8,9 @@
     </div>
 @endif --}}
 
+{{-- <x-errors /> --}}
+
+
 @if (session()->has('Add'))
     <div class="alert alert-success col-3">
         <strong>{{ session()->get('Add') }}</strong>
