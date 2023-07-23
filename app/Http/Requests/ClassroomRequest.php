@@ -33,8 +33,8 @@ class ClassroomRequest extends FormRequest
                 'image',
                 // 'max:1024',
                 Rule::dimensions([
-                    'min_width' => 444,
-                    'min_height' => 110,
+                    'width' => 444,
+                    'height' => 110,
                 ]),
             ],
         ];
@@ -45,7 +45,7 @@ class ClassroomRequest extends FormRequest
         return [
             'required' => ':attribute Important!',
             'name.required' => 'The Name is required!',
-            // 'cover_image.max' => 'Image size is great than 1M',
+            'cover_image.dimensions' => 'Image dimensions must be 444 x 111',
         ];
     }
 }

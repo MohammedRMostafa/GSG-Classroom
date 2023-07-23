@@ -16,7 +16,7 @@
                                 @endif
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $classroom->name }}</h5>
-                                    <p class="card-text">{{ $classroom->section }} - {{ $classroom->room }}</p>
+                                    <p class="card-text mb-2">{{ $classroom->section }} - {{ $classroom->room }}</p>
                                     <div class="d-flex">
                                         <a href="{{ route('classrooms.show', $classroom->id) }}"
                                             class="btn btn-outline-primary">View</a>

@@ -18,10 +18,10 @@ use App\Http\Controllers\TopicsController;
 
 
 Route::get('/', [ClassroomsController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware('auth')
     ->name('classrooms.index');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -30,12 +30,15 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 
+#==============================Classroom====================================
 
 Route::resource('classrooms', ClassroomsController::class)
+    ->middleware('auth')
     ->where(['classroom', '\d+'])
     ->except('index');
 #================================Topic======================================
 
 Route::resource('topics', TopicsController::class)
+    ->middleware('auth')
     ->where(['topic', '\d+'])
     ->except('show');

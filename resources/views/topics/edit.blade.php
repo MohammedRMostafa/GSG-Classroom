@@ -32,8 +32,8 @@
                     </div>
 
                     <div class="d-flex col-3">
-                        <button type="submit" class="mx-1 btn btn-success">Update Topic</button>
-                        <a href="{{ route('topics.index') }}" class="btn btn-primary">Home</a>
+                        <button type="submit" class="mx-1 btn btn-outline-success">Update Topic</button>
+                        <a href="{{ route('topics.index') }}" class="btn btn-outline-primary">Home</a>
                     </div>
                 </form>
 
