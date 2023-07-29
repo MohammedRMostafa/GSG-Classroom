@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
+use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\TopicsController;
 
 /*
@@ -17,9 +18,6 @@ use App\Http\Controllers\TopicsController;
 */
 
 
-Route::get('/', [ClassroomsController::class, 'index'])
-    ->middleware('auth')
-    ->name('classrooms.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,15 +28,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
 require __DIR__ . '/auth.php';
 
 
-#==============================Classroom====================================
 
-Route::resource('classrooms', ClassroomsController::class)
-    ->middleware('auth')
-    ->where(['classroom', '\d+'])
-    ->except('index');
-#================================Topic======================================
+Route::middleware('auth')->group(function () {
 
-Route::resource('topics', TopicsController::class)
-    ->middleware('auth')
-    ->where(['topic', '\d+'])
-    ->except('show');
+
+    #==============================Classroom====================================
+    Route::get('/', [ClassroomsController::class, 'index'])
+        ->name('classrooms.index');
+
+    Route::prefix('/classrooms/trashed')->as('classroom.trashed')->controller(ClassroomsController::class)->group(function () {
+        Route::get('/', 'trashed');
+        Route::put('{classroom}', 'restore')->name('.restore');
+        Route::delete('/{classroom}', 'forceDelete')->name('.force-deletes');
+    });
+
+    Route::resource('classrooms', ClassroomsController::class)
+        ->where(['classroom', '\d+'])
+        ->except('index');
+
+    Route::get('classrooms/{classroom}/join', [JoinClassroomController::class, 'create'])
+        ->middleware('signed')
+        ->name('classrooms.join');
+    Route::post('classrooms/{classroom}/join', [JoinClassroomController::class, 'store']);
+    #================================Topic======================================
+
+    Route::prefix('classroom/{classroom}/topics/trashed')->as('classroom.topics.trashed')->controller(TopicsController::class)
+        ->group(function () {
+            Route::get('/', 'trashed');
+            Route::put('/{topic}', 'restore')->name('.restore');
+            Route::delete('/{topic}', 'forceDelete')->name('.force-deletes');
+        });
+    Route::resource('classroom.topics', TopicsController::class)
+        ->where(['topic', '\d+'])
+        ->except('show');
+});

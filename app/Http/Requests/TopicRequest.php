@@ -23,14 +23,6 @@ class TopicRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'classroom_id' => 'required|integer',
-        ];
-    }
-    public function messages(): array
-    {
-        return [
-            'classroom_id.required' => 'The Classroom is required',
-            'classroom_id.integer' => 'Invalid Classroom',
         ];
     }
 }

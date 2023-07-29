@@ -4,17 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassroomRequest;
 use App\Models\Classroom;
-use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
 class ClassroomsController extends Controller
 {
 
     public function index()
     {
-        $classrooms = Classroom::all();
+        $classrooms = Classroom::active()->get();
         return view('classrooms.index', compact('classrooms'));
     }
 
@@ -36,20 +38,38 @@ class ClassroomsController extends Controller
             $validate['cover_image_path'] = $path;
         }
         $validate['code'] = Str::random(8);
-        Classroom::create($validate);
+        $validate['user_id'] = Auth::id();
+
+        DB::beginTransaction();
+        try {
+            $classroom = Classroom::create($validate);
+            $classroom->join(Auth::id(), 'teacher');
+            DB::commit();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+
         session()->flash('Add', 'Added successfully');
         return redirect()->route('classrooms.index');
     }
 
     public function show(Classroom $classroom) //Model Binding
     {
-        // $classroom = Classroom::find($id);
-        return view('classrooms.show', compact('classroom'));
+        $invitation_link = URL::signedRoute('classrooms.join', [
+            'classroom' => $classroom->id,
+            'code' => $classroom->code,
+        ]);
+
+        $students = $classroom->get_students();
+        $teachers = $classroom->get_teachers();
+
+        session()->put('classroom_id', $classroom->id);
+        return view('classrooms.show', compact('classroom', 'invitation_link', 'students', 'teachers'));
     }
 
     public function edit(Classroom $classroom) //Model Binding
     {
-        // $classroom = Classroom::find($id);
         return view('classrooms.edit', compact('classroom'));
     }
 
@@ -77,10 +97,34 @@ class ClassroomsController extends Controller
     public function destroy(Classroom $classroom)
     {
         $classroom->delete(); //delete from db
+        session()->flash('Delete', 'Deleted successfully');
+        return redirect()->route('classrooms.index');
+    }
+
+    public function trashed()
+    {
+        $classrooms = Classroom::onlyTrashed()->latest('deleted_at')->get();
+        return view('classrooms.trashed', compact('classrooms'));
+    }
+
+    public function restore($id)
+    {
+        $classroom = Classroom::onlyTrashed()->findOrFail($id);
+        $classroom->restore();
+        return redirect()
+            ->route('classrooms.index')
+            ->with('Restore', "Classroom ({$classroom->name}) restored");
+    }
+
+    public function forceDelete($id)
+    {
+        $classroom = Classroom::withTrashed()->findOrFail($id);
+        $classroom->forceDelete();
         if ($classroom->cover_image_path) {
             Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path); //delete from disk
         }
-        session()->flash('Delete', 'Deleted successfully');
-        return redirect()->route('classrooms.index');
+        return redirect()
+            ->route('classrooms.index')
+            ->with('Delete', "Classroom ({$classroom->name}) deleted forever!");
     }
 }

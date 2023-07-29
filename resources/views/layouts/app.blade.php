@@ -1,6 +1,6 @@
-@include('includes.header')
+@include('layouts.header')
 <!-- Page Content -->
 <main>
     {{ $slot }}
 </main>
-@include('includes.footer')
+@include('layouts.footer')
