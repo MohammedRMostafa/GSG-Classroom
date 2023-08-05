@@ -37,8 +37,8 @@ class ClassroomsController extends Controller
             ]);
             $validate['cover_image_path'] = $path;
         }
-        $validate['code'] = Str::random(8);
-        $validate['user_id'] = Auth::id();
+        // $validate['code'] = Str::random(8); in the Observer Class
+        // $validate['user_id'] = Auth::id(); in the Observer Class
 
         DB::beginTransaction();
         try {
@@ -118,11 +118,9 @@ class ClassroomsController extends Controller
 
     public function forceDelete($id)
     {
-        $classroom = Classroom::withTrashed()->findOrFail($id);
+        $classroom = Classroom::onlyTrashed()->findOrFail($id);
         $classroom->forceDelete();
-        if ($classroom->cover_image_path) {
-            Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path); //delete from disk
-        }
+        //delete from disk in the Observer Class
         return redirect()
             ->route('classrooms.index')
             ->with('Delete', "Classroom ({$classroom->name}) deleted forever!");

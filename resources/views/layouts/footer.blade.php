@@ -1,9 +1,6 @@
 <footer>
     <div class="text-center p-3">
-        <strong>© 2023 {{ config('app.name', 'Laravel') }} | BY: Mohammed Ryad Mostafa
-
-            <a href="https://github.com/MohammedRMostafa" target="_blank" style="color: blue">GitHub</a>
-
+        <strong>© 2023 {{ config('app.name', 'Laravel') }} | BY: Footer
         </strong>
     </div>
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
+use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\TopicsController;
 
@@ -61,4 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('classroom.topics', TopicsController::class)
         ->where(['topic', '\d+'])
         ->except('show');
+
+    #================================Classwork======================================
+
+    Route::resource('classrooms.classworks', ClassworkController::class);
 });

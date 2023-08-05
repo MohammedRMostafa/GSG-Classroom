@@ -1,5 +1,7 @@
 <x-app-layout>
-
+    <x-slot:css>
+        @vite(['resources/css/app.css'])
+    </x-slot:css>
     <x-slot:title>Profile</x-slot:title>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
