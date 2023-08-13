@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
 use App\Http\Controllers\ClassworkController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\TopicsController;
+use App\Models\Comment;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,19 +55,21 @@ Route::middleware('auth')->group(function () {
         ->middleware('signed')
         ->name('classrooms.join');
     Route::post('classrooms/{classroom}/join', [JoinClassroomController::class, 'store']);
+
+    Route::get('/classrooms/{classroom}/people', [ClassroomPeopleController::class, 'index'])->name('classroom.people');
+    Route::delete('/classrooms/{classroom}/people', [ClassroomPeopleController::class, 'destroy'])->name('classroom.people.destroy');
     #================================Topic======================================
 
-    Route::prefix('classroom/{classroom}/topics/trashed')->as('classroom.topics.trashed')->controller(TopicsController::class)
-        ->group(function () {
-            Route::get('/', 'trashed');
-            Route::put('/{topic}', 'restore')->name('.restore');
-            Route::delete('/{topic}', 'forceDelete')->name('.force-deletes');
-        });
-    Route::resource('classroom.topics', TopicsController::class)
+    Route::resource('classrooms.topics', TopicsController::class)
         ->where(['topic', '\d+'])
         ->except('show');
 
     #================================Classwork======================================
 
     Route::resource('classrooms.classworks', ClassworkController::class);
+    Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
+
+    #================================Posts======================================
+
+    Route::resource('classrooms.posts', PostController::class);
 });

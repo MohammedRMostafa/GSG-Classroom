@@ -1,68 +1,50 @@
 <x-app-layout>
 
-    <x-slot:title>Classroom</x-slot:title>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="container p-3">
-                    <x-messages />
-                    <div class="col-12 mb-3 rounded"
-                        style="background-image: url({{ $classroom->cover_image_url }});
-                        background-repeat: no-repeat; background-size: cover;">
-                        <div class="py-5"></div>
-                        <div class="align-bottom p-3">
-                            <h1 class="mb-0">{{ $classroom->name }}</h1>
-                            <div class="d-flex justify-between">
-                                <h3 class="">{{ $classroom->section }}</h3>
-                                <a href="{{ route('classroom.topics.index', $classroom->id) }}"
-                                    class="btn btn-dark">Topics</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="border rounded p-3 text-center">
-                                <span class="text-success fs-5">{{ $classroom->code }}</span>
-                                <button onclick="myFunction()" value="{{ $invitation_link }}" id="copy"
-                                    class="btn btn-sm btn-primary mt-1">Get
-                                    Link</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="container p-3">
-                    <div class="row">
-                        <div class="border-2 p-2 m-2">
-                            <h2>Teachers</h2>
-                            <ul>
-                                @foreach ($teachers as $teacher)
-                                    <li> -> {{ $teacher->name }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        <div class="border-2 p-2 m-2">
-                            <h2>Students</h2>
-                            <ul>
-                                @foreach ($students as $student)
-                                    <li> -> {{ $student->name }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <x-slot:title>Classwork {{ $classwork->title }}</x-slot:title>
+    <div class="container p-3 my-4 border shadow-sm rounded-1">
+
+        <x-messages />
+        <h2 class="mb-4">Classwork {{ $classwork->title }}</h2>
+        <hr>
+        <p> {{ $classwork->description }}</p>
     </div>
 
-    <x-slot:js>
-        <script>
-            function myFunction() {
-                var copyText = document.getElementById("copy");
-                navigator.clipboard.writeText(copyText.value);
-                alert("Copied successfully");
-            }
-        </script>
-    </x-slot:js>
+    <div class="container p-3 my-4 border shadow-sm rounded-1">
+
+        <h2 class="mb-4">Comments</h2>
+
+        @foreach ($classwork->comments as $comment)
+            <div class="d-flex justify-content-start border rounded p-2 mb-2">
+                <div class="me-1">
+                    <img src="{{ url('https://ui-avatars.com/api/?rounded=true&size=32&name=' . $comment->user->name) }}"
+                        alt="">
+                </div>
+                <div>
+                    <div class="d-flex">
+                        <h5 class="me-3">{{ $comment->user->name }}</h5>
+                        <p class="text-muted fs-6">{{ $comment->created_at->diffForHumans() }}</p>
+                    </div>
+                    <p>{{ $comment->content }}</p>
+                </div>
+            </div>
+        @endforeach
+
+        <form action="{{ route('comments.store') }}" method="post">
+            @csrf
+            <input type="hidden" name="id" value="{{ $classwork->id }}">
+            <input type="hidden" name="type" value="classwork">
+            <div class="d-flex">
+                <div class="col-8">
+                    <div class="form-floating mb-3">
+                        <textarea @class(['form-control', 'is-invalid' => $errors->has('content')]) id="content" name="content" value="{{ old('content') }}"></textarea>
+                        <label for="content">Comment</label>
+                        <x-error field-name="content" />
+                    </div>
+                </div>
+                <div class="ms-1">
+                    <button type="submit" class="mx-1 btn btn-outline-primary">Comment</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </x-app-layout>

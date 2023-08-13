@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -60,4 +63,26 @@ class User extends Authenticatable implements MustVerifyEmail
     // {
     //     $this->attributes['email'] = strtoupper($value);
     // }
+
+    public function classrooms(): BelongsToMany
+    {
+        return $this->belongsToMany(Classroom::class);
+    }
+
+    public function createdCalssroom(): HasMany
+    {
+        return $this->hasMany(Classroom::class, 'user_id'); //who is owner
+    }
+
+    public function classworks(): BelongsToMany
+    {
+        return $this->belongsToMany(Classwork::class)
+            ->withPivot('grade', 'submitted_at', 'status', 'created_at')
+            ->using(ClassworkUser::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

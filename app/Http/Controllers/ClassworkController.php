@@ -22,9 +22,14 @@ class ClassworkController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Classroom $classroom)
+    public function index(Request $request, Classroom $classroom)
     {
-        $classworks = $classroom->classworks()->with('topic')->orderBy('published_at')->lazy();
+        $classworks = $classroom->classworks()->with('topic')
+            ->when($request->search, function ($builder, $value) {
+                $builder->where('title', 'LIKE', "%{$value}%")
+                    ->orWhere('description', 'LIKE', "%{$value}%");
+            })
+            ->orderBy('published_at')->lazy();
         $classworks = $classworks->groupBy('topic_id');
         // dd($classworks);
         return view('classworks.index', compact('classroom', 'classworks'));
@@ -36,7 +41,8 @@ class ClassworkController extends Controller
     public function create(Request $request, Classroom $classroom)
     {
         $type = $this->gettype($request);
-        return view('classworks.create', compact('classroom', 'type'));
+        $classwork = new Classwork();
+        return view('classworks.create', compact('classroom', 'type', 'classwork'));
     }
 
     /**
@@ -49,14 +55,22 @@ class ClassworkController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'topic_id' => ['nullable', 'int', 'exists:topics,id'],
+            'grade' => ['required_if:type,assignment', 'numeric', 'min:0'],
+            'due' => ['required_if:type,assignment', 'date', 'after:published_at'],
         ]);
 
         $request->merge([
             'user_id' => Auth::id(),
             'type' => $type,
+            'options' => [
+                'grade' => $request->input('grade'),
+                'due' => $request->input('due'),
+            ],
         ]);
+        // dd($request);
+        $classwork = $classroom->classworks()->create($request->all());
+        $classwork->users()->attach($request->input('students'));
 
-        $classroom->classworks()->create($request->all());
         return redirect()->route('classrooms.classworks.index', $classroom->id)
             ->with('Add', 'Added Classwork Successfuly');
     }
@@ -66,15 +80,17 @@ class ClassworkController extends Controller
      */
     public function show(Classroom $classroom, Classwork $classwork)
     {
-        //
+        return view('classworks.show', compact('classroom', 'classwork'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Classroom $classroom, Classwork $classwork)
+    public function edit(Request $request, Classroom $classroom, Classwork $classwork)
     {
-        //
+        $type = $classwork->type;
+        $assigned = $classwork->users()->pluck('id')->toArray();
+        return view('classworks.edit', compact('classroom', 'classwork', 'type', 'assigned'));
     }
 
     /**
@@ -82,7 +98,26 @@ class ClassworkController extends Controller
      */
     public function update(Request $request, Classroom $classroom, Classwork $classwork)
     {
-        //
+        $type = $classwork->type;
+        $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'topic_id' => ['nullable', 'int', 'exists:topics,id'],
+            'grade' => ['required_if:type,assignment', 'numeric', 'min:0'],
+            'due' => ['required_if:type,assignment', 'date', 'after:published_at'],
+        ]);
+
+        $request->merge([
+            'user_id' => Auth::id(),
+            'type' => $type,
+            'options' => [
+                'grade' => $request->input('grade'),
+                'due' => $request->input('due'),
+            ],
+        ]);
+        $classwork->update($request->all());
+        $classwork->users()->sync($request->input('students'));
+        return back()->with('Edit', 'Classwork Updated Successfuly');
     }
 
     /**

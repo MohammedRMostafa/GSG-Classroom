@@ -3,18 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TopicRequest;
-use App\Models\Scopes\TopicClassroomScope;
+use App\Models\Classroom;
 use App\Models\Topic;
 
 class TopicsController extends Controller
 {
-    public function index($classroom)
+    public function index(Classroom $classroom)
     {
-        $topics = Topic::get();
-        return view('topics.index', compact('topics', 'classroom'));
+        return view('topics.index', compact('classroom'));
     }
 
-    public function create($classroom)
+    public function create(Classroom $classroom)
     {
         return view('topics.create', compact('classroom'));
     }
@@ -25,58 +24,29 @@ class TopicsController extends Controller
         $validated['classroom_id'] = $classroom;
         Topic::create($validated);
         session()->flash('Add', 'Added successfully');
-        return redirect()->route('classroom.topics.index', $classroom);
+        return redirect()->route('classrooms.topics.index', $classroom);
     }
 
-    // public function show(Topic $topic) //Model Binding
-    // {
-    //     // $topic = Topic::find($id);
-    //     return view('topics.show', compact('topic'));
-    // }
-
-    public function edit($topic, $classroom) //Model Binding
+    public function edit(Classroom $classroom, Topic $topic) //Model Binding
     {
-        $topic = Topic::findOrFail($topic);
-        return view('topics.edit', compact('topic', 'classroom'));
+        // $topic = Topic::findOrFail($topic);
+        return view('topics.edit', compact('classroom', 'topic'));
     }
 
-    public function update(TopicRequest $request, $topic, $classroom) //Model Binding
+    public function update(TopicRequest $request, $classroom, $topic) //Model Binding
     {
         $topic = Topic::findOrFail($topic);
         $validate = $request->validated();
         $topic->update($validate);
         session()->flash('Edit', 'Modified successfully');
-        return redirect()->route('classroom.topics.index', compact('classroom'));
+        return redirect()->route('classrooms.topics.index', compact('classroom'));
     }
 
-    public function destroy($id, $classroom)
+    public function destroy($classroom, $topic)
     {
-        Topic::findOrFail($id)->delete();
+        $topic = Topic::findOrFail($topic);
+        $topic->delete();
         session()->flash('Delete', 'Deleted successfully');
-        return redirect()->route('classroom.topics.index', $classroom);
-    }
-
-    public function trashed($classroom)
-    {
-        $topics = Topic::onlyTrashed()->latest('deleted_at')->get();
-        return view('topics.trashed', compact('topics', 'classroom'));
-    }
-
-    public function restore($id, $classroom)
-    {
-        $topic = Topic::onlyTrashed()->findOrFail($id);
-        $topic->restore();
-        return redirect()
-            ->route('classroom.topics.index', compact('classroom'))
-            ->with('Restore', "Topic ({$topic->name}) restored");
-    }
-
-    public function forceDelete($id, $classroom)
-    {
-        $topic = Topic::withTrashed()->findOrFail($id);
-        $topic->forceDelete();
-        return redirect()
-            ->route('classroom.topics.index', compact('classroom'))
-            ->with('Delete', "Topic ({$topic->name}) deleted forever!");
+        return redirect()->route('classrooms.topics.index', $classroom);
     }
 }

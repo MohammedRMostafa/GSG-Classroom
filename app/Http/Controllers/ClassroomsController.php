@@ -61,11 +61,11 @@ class ClassroomsController extends Controller
             'code' => $classroom->code,
         ]);
 
-        $students = $classroom->get_students();
-        $teachers = $classroom->get_teachers();
+        // $students = $classroom->get_students();
+        // $teachers = $classroom->get_teachers();
 
         session()->put('classroom_id', $classroom->id);
-        return view('classrooms.show', compact('classroom', 'invitation_link', 'students', 'teachers'));
+        return view('classrooms.show', compact('classroom', 'invitation_link'));
     }
 
     public function edit(Classroom $classroom) //Model Binding

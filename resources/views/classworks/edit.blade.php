@@ -1,21 +1,24 @@
 <x-app-layout>
 
-    <x-slot:title>Edit Classroom</x-slot:title>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+    <x-slot:title>Edit Classwork</x-slot:title>
+    <div class="container p-3 my-4 border shadow-sm rounded-1">
 
-                <h1 class="mb-4">Edit Classroom '{{ $classroom->name }}'</h1>
-
-                <form action="{{ route('classrooms.update', $classroom->id) }}" method="post"
-                    enctype="multipart/form-data">
-                    @csrf
-                    @method('put')
-                    @include('classrooms._form', [
-                        'button_lable' => 'Update Classroom',
-                    ])
-                </form>
+        <x-messages />
+        <h2 class="mb-4">Edit Classwork</h2>
+        <form action="{{ route('classrooms.classworks.update', [$classroom->id, $classwork->id, 'type' => $type]) }}"
+            method="post">
+            @csrf
+            @method('put')
+            @include('classworks._form')
+            <div class="d-flex col-3">
+                <button type="submit" class="mx-1 btn btn-outline-primary">Update</button>
             </div>
-        </div>
+        </form>
+
+
+
+
+
     </div>
+
 </x-app-layout>

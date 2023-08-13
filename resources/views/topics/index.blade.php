@@ -16,16 +16,15 @@
                 </thead>
                 <tbody>
                     <?php $index = 1; ?>
-                    @foreach ($topics as $topic)
+                    @foreach ($classroom->topics as $topic)
                         <tr>
                             <th>{{ $index++ }}</th>
                             <td>{{ $topic->name }}</td>
                             <td>
                                 <div class="d-flex">
-                                    {{-- <a href="{{ route('topics.show', $topic->id) }}" class="btn btn-primary">View</a> --}}
-                                    <a href="{{ route('classroom.topics.edit', [$topic->id, $classroom]) }}"
+                                    <a href="{{ route('classrooms.topics.edit', [$classroom, $topic->id]) }}"
                                         class="btn btn-outline-dark mx-1">Edit</a>
-                                    <form action="{{ route('classroom.topics.destroy', [$topic->id, $classroom]) }}"
+                                    <form action="{{ route('classrooms.topics.destroy', [$classroom, $topic->id]) }}"
                                         method="POST">
                                         @csrf
                                         @method('delete')
@@ -38,9 +37,7 @@
                 </tbody>
             </table>
         </div>
-        <a href="{{ route('classroom.topics.create', $classroom) }}" class="col-1 mx-1 mt-3 btn btn-success">Add</a>
-        <a href="{{ route('classroom.topics.trashed', $classroom) }}" class="col-1 mx-1 mt-3 btn btn-danger">Trash</a>
-
+        <a href="{{ route('classrooms.topics.create', $classroom) }}" class="col-1 mx-1 mt-3 btn btn-success">Add</a>
 
     </div>
 
