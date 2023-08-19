@@ -29,7 +29,7 @@ class ClassworkController extends Controller
                 $builder->where('title', 'LIKE', "%{$value}%")
                     ->orWhere('description', 'LIKE', "%{$value}%");
             })
-            ->orderBy('published_at')->lazy();
+            ->latest('published_at')->lazy();
         $classworks = $classworks->groupBy('topic_id');
         // dd($classworks);
         return view('classworks.index', compact('classroom', 'classworks'));
@@ -80,7 +80,8 @@ class ClassworkController extends Controller
      */
     public function show(Classroom $classroom, Classwork $classwork)
     {
-        return view('classworks.show', compact('classroom', 'classwork'));
+        $submissions = Auth::user()->submissions()->where('classwork_id', $classwork->id)->get();
+        return view('classworks.show', compact('classroom', 'classwork', 'submissions'));
     }
 
     /**

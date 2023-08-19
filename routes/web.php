@@ -9,6 +9,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TopicsController;
+use App\Http\Controllers\SubmissionController;
 use App\Models\Comment;
 
 /*
@@ -68,6 +69,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('classrooms.classworks', ClassworkController::class);
     Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('submissions/{classwork}', [SubmissionController::class, 'store'])->name('submissions.store');
+    Route::get('submissions/{submission}/file', [SubmissionController::class, 'file'])->name('submissions.file');
 
     #================================Posts======================================
 
