@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('classrooms.classworks', ClassworkController::class);
     Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('classworks/{classwork}/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
     Route::post('submissions/{classwork}', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::get('submissions/{submission}/file', [SubmissionController::class, 'file'])->name('submissions.file');
 

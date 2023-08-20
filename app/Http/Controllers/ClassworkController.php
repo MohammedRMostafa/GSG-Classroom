@@ -31,8 +31,9 @@ class ClassworkController extends Controller
             })
             ->latest('published_at')->lazy();
         $classworks = $classworks->groupBy('topic_id');
-        // dd($classworks);
-        return view('classworks.index', compact('classroom', 'classworks'));
+        $isTeacher = $classroom->teachers()->where('user_id', Auth::id())->exists();
+        // dd($isTeacher);
+        return view('classworks.index', compact('classroom', 'classworks', 'isTeacher'));
     }
 
     /**

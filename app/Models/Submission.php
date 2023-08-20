@@ -18,4 +18,9 @@ class Submission extends Model
     {
         return $this->belongsTo(Classwork::class);
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -12,6 +12,16 @@ use Throwable;
 
 class SubmissionController extends Controller
 {
+
+    public function index(Classwork $classwork)
+    {
+        $submissions = Submission::with('user')->where('classwork_id', $classwork->id)->get();
+        $submissions = $submissions->groupBy('user_id');
+
+        return view('classworks.submissions', compact('classwork', 'submissions'));
+    }
+
+
     public function store(Request $request, Classwork $classwork)
     {
         $request->validate([

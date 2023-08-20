@@ -46,11 +46,28 @@
                             aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 {{ $classwork->description }}
-                                <a type="button" class="btn btn-sm btn-outline-primary"
-                                    href="{{ route('classrooms.classworks.show', [$classroom->id, $classwork->id]) }}">see
-                                    more</a>
-                                <a type="button" class="btn btn-sm btn-outline-dark"
-                                    href="{{ route('classrooms.classworks.edit', [$classroom->id, $classwork->id]) }}">Edit</a>
+                                <hr>
+                                <div class="d-flex">
+                                    <a type="button" class="btn btn-sm btn-outline-primary"
+                                        href="{{ route('classrooms.classworks.show', [$classroom->id, $classwork->id]) }}">see
+                                        more</a>
+                                    <a type="button" class="btn btn-sm btn-outline-dark mx-1"
+                                        href="{{ route('classrooms.classworks.edit', [$classroom->id, $classwork->id]) }}">Edit</a>
+
+                                    @if ($isTeacher)
+                                        @if ($classwork->type == 'assignment')
+                                            <a type="button" class="btn btn-sm btn-outline-secondary me-1"
+                                                href="{{ route('submissions.index', $classwork->id) }}">Submissions</a>
+                                        @endif
+                                        <form
+                                            action="{{ route('classrooms.classworks.destroy', [$classroom->id, $classwork->id]) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
