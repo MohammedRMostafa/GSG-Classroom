@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 class ClassroomsController extends Controller
 {
 
+
     public function index()
     {
         $classrooms = Classroom::active()->get();
@@ -56,13 +57,11 @@ class ClassroomsController extends Controller
 
     public function show(Classroom $classroom) //Model Binding
     {
+        $this->authorize('view', $classroom);
         $invitation_link = URL::signedRoute('classrooms.join', [
             'classroom' => $classroom->id,
             'code' => $classroom->code,
         ]);
-
-        // $students = $classroom->get_students();
-        // $teachers = $classroom->get_teachers();
 
         session()->put('classroom_id', $classroom->id);
         return view('classrooms.show', compact('classroom', 'invitation_link'));
@@ -70,11 +69,13 @@ class ClassroomsController extends Controller
 
     public function edit(Classroom $classroom) //Model Binding
     {
+        $this->authorize('update', $classroom);
         return view('classrooms.edit', compact('classroom'));
     }
 
     public function update(ClassroomRequest $request, Classroom $classroom) //Model Binding
     {
+        $this->authorize('update', $classroom);
         $validate = $request->validated();
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
@@ -96,6 +97,7 @@ class ClassroomsController extends Controller
 
     public function destroy(Classroom $classroom)
     {
+        $this->authorize('delete', $classroom);
         $classroom->delete(); //delete from db
         session()->flash('Delete', 'Deleted successfully');
         return redirect()->route('classrooms.index');
@@ -110,6 +112,7 @@ class ClassroomsController extends Controller
     public function restore($id)
     {
         $classroom = Classroom::onlyTrashed()->findOrFail($id);
+        $this->authorize('restore', $classroom);
         $classroom->restore();
         return redirect()
             ->route('classrooms.index')
@@ -119,6 +122,7 @@ class ClassroomsController extends Controller
     public function forceDelete($id)
     {
         $classroom = Classroom::onlyTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $classroom);
         $classroom->forceDelete();
         //delete from disk in the Observer Class
         return redirect()

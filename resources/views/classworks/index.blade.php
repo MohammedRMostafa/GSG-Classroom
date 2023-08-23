@@ -5,23 +5,25 @@
         <x-messages />
         <div class="d-flex justify-content-between mb-2">
             <div class="h2">Classworks</div>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    + Create
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item"
-                            href="{{ route('classrooms.classworks.create', [$classroom->id, 'type' => 'assignment']) }}">Assignment</a>
-                    </li>
-                    <li><a class="dropdown-item"
-                            href="{{ route('classrooms.classworks.create', [$classroom->id, 'type' => 'material']) }}">Material</a>
-                    </li>
-                    <li><a class="dropdown-item"
-                            href="{{ route('classrooms.classworks.create', [$classroom->id, 'type' => 'question']) }}">Question</a>
-                    </li>
-                </ul>
-            </div>
+            @can('create', ['App\Models\Classwork', $classroom])
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        + Create
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item"
+                                href="{{ route('classrooms.classworks.create', [$classroom->id, 'type' => 'assignment']) }}">Assignment</a>
+                        </li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('classrooms.classworks.create', [$classroom->id, 'type' => 'material']) }}">Material</a>
+                        </li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('classrooms.classworks.create', [$classroom->id, 'type' => 'question']) }}">Question</a>
+                        </li>
+                    </ul>
+                </div>
+            @endcan
         </div>
         <form class="d-flex align-items-center col-3" action="{{ URL::current() }}" method="get">
             <input class="form-control me-1" type="text" name="search" placeholder="Search...">
@@ -48,17 +50,18 @@
                                 {{ $classwork->description }}
                                 <hr>
                                 <div class="d-flex">
-                                    <a type="button" class="btn btn-sm btn-outline-primary"
+                                    <a type="button" class="btn btn-sm btn-outline-primary me-1"
                                         href="{{ route('classrooms.classworks.show', [$classroom->id, $classwork->id]) }}">see
                                         more</a>
-                                    <a type="button" class="btn btn-sm btn-outline-dark mx-1"
-                                        href="{{ route('classrooms.classworks.edit', [$classroom->id, $classwork->id]) }}">Edit</a>
-
-                                    @if ($isTeacher)
-                                        @if ($classwork->type == 'assignment')
-                                            <a type="button" class="btn btn-sm btn-outline-secondary me-1"
-                                                href="{{ route('submissions.index', $classwork->id) }}">Submissions</a>
-                                        @endif
+                                    @can('update', $classwork)
+                                        <a type="button" class="btn btn-sm btn-outline-dark me-1"
+                                            href="{{ route('classrooms.classworks.edit', [$classroom->id, $classwork->id]) }}">Edit</a>
+                                    @endcan
+                                    @can('view-any', ['App\Models\Submission', $classwork])
+                                        <a type="button" class="btn btn-sm btn-outline-secondary me-1"
+                                            href="{{ route('submissions.index', $classwork->id) }}">Submissions</a>
+                                    @endcan
+                                    @can('delete', $classwork)
                                         <form
                                             action="{{ route('classrooms.classworks.destroy', [$classroom->id, $classwork->id]) }}"
                                             method="POST">
@@ -66,7 +69,7 @@
                                             @method('delete')
                                             <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                                         </form>
-                                    @endif
+                                    @endcan
                                 </div>
                             </div>
                         </div>

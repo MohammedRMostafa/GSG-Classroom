@@ -31,9 +31,9 @@ class ClassworkController extends Controller
             })
             ->latest('published_at')->lazy();
         $classworks = $classworks->groupBy('topic_id');
-        $isTeacher = $classroom->teachers()->where('user_id', Auth::id())->exists();
+        // $isTeacher = $classroom->teachers()->where('user_id', Auth::id())->exists();
         // dd($isTeacher);
-        return view('classworks.index', compact('classroom', 'classworks', 'isTeacher'));
+        return view('classworks.index', compact('classroom', 'classworks'));
     }
 
     /**
@@ -41,6 +41,7 @@ class ClassworkController extends Controller
      */
     public function create(Request $request, Classroom $classroom)
     {
+        $this->authorize('create', [Classwork::class, $classroom]);
         $type = $this->gettype($request);
         $classwork = new Classwork();
         return view('classworks.create', compact('classroom', 'type', 'classwork'));
@@ -51,6 +52,7 @@ class ClassworkController extends Controller
      */
     public function store(Request $request, Classroom $classroom)
     {
+        $this->authorize('create', [Classwork::class, $classroom]);
         $type = $this->gettype($request);
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -81,6 +83,7 @@ class ClassworkController extends Controller
      */
     public function show(Classroom $classroom, Classwork $classwork)
     {
+        $this->authorize('view', $classwork);
         $submissions = Auth::user()->submissions()->where('classwork_id', $classwork->id)->get();
         return view('classworks.show', compact('classroom', 'classwork', 'submissions'));
     }
@@ -90,6 +93,7 @@ class ClassworkController extends Controller
      */
     public function edit(Request $request, Classroom $classroom, Classwork $classwork)
     {
+        $this->authorize('update', $classwork);
         $type = $classwork->type;
         $assigned = $classwork->users()->pluck('id')->toArray();
         return view('classworks.edit', compact('classroom', 'classwork', 'type', 'assigned'));
@@ -100,6 +104,7 @@ class ClassworkController extends Controller
      */
     public function update(Request $request, Classroom $classroom, Classwork $classwork)
     {
+        $this->authorize('update', $classwork);
         $type = $classwork->type;
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -127,6 +132,8 @@ class ClassworkController extends Controller
      */
     public function destroy(Classroom $classroom, Classwork $classwork)
     {
+        $this->authorize('delete', $classwork);
+
         //
     }
 }

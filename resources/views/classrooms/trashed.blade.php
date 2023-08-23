@@ -16,17 +16,21 @@
                             <h5 class="card-title">{{ $classroom->name }}</h5>
                             <p class="card-text mb-2">{{ $classroom->section }} - {{ $classroom->room }}</p>
                             <div class="d-flex">
-                                <form action="{{ route('classroom.trashed.restore', $classroom->id) }}" method="POST">
-                                    @csrf
-                                    @method('put')
-                                    <button type="submit" class="btn btn-outline-success mx-1">restore</button>
-                                </form>
-                                <form action="{{ route('classroom.trashed.force-deletes', $classroom->id) }}"
-                                    method="POST">
-                                    @csrf
-                                    @method('delete')
-                                    <button type="submit" class="btn btn-outline-danger mx-1">delete</button>
-                                </form>
+                                @can('restore', $classroom)
+                                    <form action="{{ route('classroom.trashed.restore', $classroom->id) }}" method="POST">
+                                        @csrf
+                                        @method('put')
+                                        <button type="submit" class="btn btn-outline-success mx-1">restore</button>
+                                    </form>
+                                @endcan
+                                @can('forceDelete', $classroom)
+                                    <form action="{{ route('classroom.trashed.force-deletes', $classroom->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-outline-danger mx-1">delete</button>
+                                    </form>
+                                @endcan
                             </div>
                         </div>
                     </div>

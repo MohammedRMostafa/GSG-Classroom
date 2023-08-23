@@ -16,14 +16,18 @@
                             <p class="card-text mb-2">{{ $classroom->section }} - {{ $classroom->room }}</p>
                             <div class="d-flex">
                                 <a href="{{ route('classrooms.show', $classroom->id) }}"
-                                    class="btn btn-outline-primary">View</a>
-                                <a href="{{ route('classrooms.edit', $classroom->id) }}"
-                                    class="btn btn-outline-dark mx-1">Edit</a>
-                                <form action="{{ route('classrooms.destroy', $classroom->id) }}" method="POST">
-                                    @csrf
-                                    @method('delete')
-                                    <button type="submit" class="btn btn-outline-danger">delete</button>
-                                </form>
+                                    class="btn btn-outline-primary me-1">View</a>
+                                @can('update', $classroom)
+                                    <a href="{{ route('classrooms.edit', $classroom->id) }}"
+                                        class="btn btn-outline-dark me-1">Edit</a>
+                                @endcan
+                                @can('delete', $classroom)
+                                    <form action="{{ route('classrooms.destroy', $classroom->id) }}" method="POST">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-outline-danger">delete</button>
+                                    </form>
+                                @endcan
                             </div>
                         </div>
                     </div>

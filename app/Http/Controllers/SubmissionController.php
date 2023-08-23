@@ -15,7 +15,8 @@ class SubmissionController extends Controller
 
     public function index(Classwork $classwork)
     {
-        $submissions = Submission::with('user')->where('classwork_id', $classwork->id)->get();
+        $this->authorize('view-any', [Submission::class, $classwork]);
+        $submissions = Submission::with('user')->where('classwork_id', $classwork->id)->lazy();
         $submissions = $submissions->groupBy('user_id');
 
         return view('classworks.submissions', compact('classwork', 'submissions'));
@@ -24,6 +25,7 @@ class SubmissionController extends Controller
 
     public function store(Request $request, Classwork $classwork)
     {
+        $this->authorize('create', [Submission::class, $classwork]);
         $request->validate([
             'files.*' => 'file|mimetypes:text/plain,application/pdf,image/*',
             'files' => 'required|array',
@@ -36,7 +38,7 @@ class SubmissionController extends Controller
         foreach ($request->file('files') as $file) {
             $data[] = [
                 'classwork_id' => $classwork->id,
-                'content' => $file->store("submission/{$classwork->id}"),
+                'content' => $file->store("submissions/{$classwork->id}"),
                 'type' => 'file',
             ];
         }
@@ -61,11 +63,7 @@ class SubmissionController extends Controller
 
     public function file(Submission $submission)
     {
-        $isTeacher = $submission->classwork->classroom->teachers()->where('user_id', Auth::id())->exists();
-        $isOwner = $submission->user_id == Auth::id();
-        if (!$isTeacher && !$isOwner) {
-            abort(403);
-        }
+        $this->authorize('file', $submission);
         return response()->file(storage_path('app/' . $submission->content));
     }
 }

@@ -10,18 +10,21 @@ class TopicsController extends Controller
 {
     public function index(Classroom $classroom)
     {
+        $this->authorize('view-any', [Topic::class, $classroom]);
         return view('topics.index', compact('classroom'));
     }
 
     public function create(Classroom $classroom)
     {
+        $this->authorize('create', [Topic::class, $classroom]);
         return view('topics.create', compact('classroom'));
     }
 
-    public function store(TopicRequest $request, $classroom)
+    public function store(TopicRequest $request, Classroom $classroom)
     {
+        $this->authorize('create', [Topic::class, $classroom]);
         $validated = $request->validated();
-        $validated['classroom_id'] = $classroom;
+        $validated['classroom_id'] = $classroom->id;
         Topic::create($validated);
         session()->flash('Add', 'Added successfully');
         return redirect()->route('classrooms.topics.index', $classroom);
@@ -29,22 +32,22 @@ class TopicsController extends Controller
 
     public function edit(Classroom $classroom, Topic $topic) //Model Binding
     {
-        // $topic = Topic::findOrFail($topic);
+        $this->authorize('update', [Topic::class, $classroom]);
         return view('topics.edit', compact('classroom', 'topic'));
     }
 
-    public function update(TopicRequest $request, $classroom, $topic) //Model Binding
+    public function update(TopicRequest $request, Classroom $classroom, Topic $topic) //Model Binding
     {
-        $topic = Topic::findOrFail($topic);
+        $this->authorize('update', [Topic::class, $classroom]);
         $validate = $request->validated();
         $topic->update($validate);
         session()->flash('Edit', 'Modified successfully');
         return redirect()->route('classrooms.topics.index', compact('classroom'));
     }
 
-    public function destroy($classroom, $topic)
+    public function destroy(Classroom $classroom, Topic $topic)
     {
-        $topic = Topic::findOrFail($topic);
+        $this->authorize('delete', [Topic::class, $classroom]);
         $topic->delete();
         session()->flash('Delete', 'Deleted successfully');
         return redirect()->route('classrooms.topics.index', $classroom);
