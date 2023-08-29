@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <x-slot:title>People</x-slot:title>
+    <x-slot:title>{{ __('People') }}</x-slot:title>
     <div class="container p-3 my-4 border shadow-sm rounded-1">
         <x-messages />
         <div class="row">
@@ -9,7 +9,7 @@
                     <h2 class="accordion-header" id="flush-headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#flush-collapseOne" aria-expanded="true" aria-controls="flush-collapseOne">
-                            Teachers
+                            {{ __('Teachers') }}
                         </button>
                     </h2>
                     <div id="flush-collapseOne" class="accordion-collapse collapse show"
@@ -27,16 +27,16 @@
 
                                             <button type="submit" class="btn btn-sm btn-danger">
                                                 @if ($teacher->id == $auth_id)
-                                                    leave
+                                                    {{ __('leave') }}
                                                 @else
-                                                    Remove
+                                                    {{ __('Remove') }}
                                                 @endif
                                             </button>
                                         </form>
                                     </li>
                                 @empty
                                     <div class="container p-3 border shadow-sm rounded-1">
-                                        <p class="text-center fs-6 mb-0">No Teachers Yet.
+                                        <p class="text-center fs-6 mb-0">{{ __('No Teachers Yet.') }}
                                         </p>
                                     </div>
                                 @endforelse
@@ -48,7 +48,7 @@
                     <h2 class="accordion-header" id="flush-headingTwo">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#flush-collapseTwo" aria-expanded="true" aria-controls="flush-collapseTwo">
-                            Students
+                            {{ __('Students') }}
                         </button>
                     </h2>
                     <div id="flush-collapseTwo" class="accordion-collapse collapse show"
@@ -65,16 +65,16 @@
                                             <input type="hidden" name="user_id" value="{{ $student->id }}">
                                             <button type="submit" class="btn btn-sm btn-danger">
                                                 @if ($student->id == $auth_id)
-                                                    leave
+                                                    {{ __('leave') }}
                                                 @else
-                                                    Remove
+                                                    {{ __('Remove') }}
                                                 @endif
                                             </button>
                                         </form>
                                     </li>
                                 @empty
                                     <div class="container p-3 border shadow-sm rounded-1">
-                                        <p class="text-center fs-6 mb-0">No Students Yet.
+                                        <p class="text-center fs-6 mb-0">{{ __('No Students Yet.') }}
                                         </p>
                                     </div>
                                 @endforelse

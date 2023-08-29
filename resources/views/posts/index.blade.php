@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <x-slot:title>Posts</x-slot:title>
+    <x-slot:title>{{ __('Posts') }}</x-slot:title>
     <div class="container p-3 my-4 border shadow-sm rounded-1">
         <x-messages />
         @forelse ($classroom->posts as $post)
@@ -34,12 +34,12 @@
                             </div>
                             <div class="form-floating me-2 col-md-8">
                                 <textarea @class(['form-control', 'is-invalid' => $errors->has('content')]) id="content" name="content" value="{{ old('content') }}"></textarea>
-                                <label for="content">Comment</label>
+                                <label for="content">{{ __('Comment') }}</label>
                                 <x-error field-name="content" />
                             </div>
 
                             <button class="btn btn-primary btn-sm shadow-none col-auto" type="submit">Post
-                                comment</button>
+                                {{ __('comment') }}</button>
                         </form>
                         @foreach ($post->comments as $comment)
                             <div class="d-flex justify-content-start border rounded ps-1 pt-1 mb-2">
@@ -63,11 +63,11 @@
 
         @empty
             <div class="p-3 border shadow-sm rounded-1">
-                <p class="text-center fs-6 mb-0">No Posts Yet. Create one to get started!</p>
+                <p class="text-center fs-6 mb-0">{{ __('No Posts Yet. Create one to get started!') }}</p>
             </div>
         @endforelse
-        <a href="{{ route('classrooms.posts.create', $classroom->id) }}" class="col-1 mx-1 mt-3 btn btn-success">Add
-            Post</a>
+        <a href="{{ route('classrooms.posts.create', $classroom->id) }}"
+            class="col-1 mx-1 mt-3 btn btn-success">{{ __('Add Post') }}</a>
     </div>
 
 

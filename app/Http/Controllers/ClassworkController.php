@@ -28,11 +28,16 @@ class ClassworkController extends Controller
             ->when($request->search, function ($builder, $value) {
                 $builder->where('title', 'LIKE', "%{$value}%")
                     ->orWhere('description', 'LIKE', "%{$value}%");
+            })->where(function ($query) {
+                $query->whereHas('users', function ($query) {
+                    $query->where('id', Auth::id());
+                })
+                    ->orWhereHas('classroom.teachers', function ($query) {
+                        $query->where('id', Auth::id());
+                    });
             })
             ->latest('published_at')->lazy();
         $classworks = $classworks->groupBy('topic_id');
-        // $isTeacher = $classroom->teachers()->where('user_id', Auth::id())->exists();
-        // dd($isTeacher);
         return view('classworks.index', compact('classroom', 'classworks'));
     }
 
@@ -133,7 +138,7 @@ class ClassworkController extends Controller
     public function destroy(Classroom $classroom, Classwork $classwork)
     {
         $this->authorize('delete', $classwork);
-
-        //
+        $classwork->delete();
+        return back()->with('Delete', 'Classwork Deleted Successfuly');
     }
 }

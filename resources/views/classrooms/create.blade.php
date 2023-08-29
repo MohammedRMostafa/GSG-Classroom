@@ -7,7 +7,7 @@
         <form action="{{ route('classrooms.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             @include('classrooms._form', [
-                'button_lable' => 'Create Classroom',
+                'button_lable' => __('Create'),
             ])
         </form>
     </div>

@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <x-slot:title>Classwork {{ $classwork->title }}</x-slot:title>
+    <x-slot:title>{{ __('Classwork') }} {{ $classwork->title }}</x-slot:title>
 
     <div class="container">
         <div class="row">
@@ -9,14 +9,14 @@
                 <div class="p-3 my-4 border shadow-sm rounded-1">
 
                     <x-messages />
-                    <h2 class="mb-4">Classwork {{ $classwork->title }}</h2>
+                    <h2 class="mb-4">{{ __('Classwork') }} {{ $classwork->title }}</h2>
                     <hr>
                     <p> {{ $classwork->description }}</p>
                 </div>
 
                 <div class="p-3 my-4 border shadow-sm rounded-1">
 
-                    <h2 class="mb-4">Comments</h2>
+                    <h2 class="mb-4">{{ __('Comments') }}</h2>
                     <form action="{{ route('comments.store') }}" method="post" class="row align-items-center mb-3 p-1">
                         @csrf
                         <input type="hidden" name="id" value="{{ $classwork->id }}">
@@ -27,12 +27,12 @@
                         </div>
                         <div class="form-floating me-2 col-md-8">
                             <textarea @class(['form-control', 'is-invalid' => $errors->has('content')]) id="content" name="content" value="{{ old('content') }}"></textarea>
-                            <label for="content">Comment</label>
+                            <label for="content">{{ __('Comment') }}</label>
                             <x-error field-name="content" />
                         </div>
 
-                        <button class="btn btn-primary btn-sm shadow-none col-auto" type="submit">Post
-                            comment</button>
+                        <button class="btn btn-primary btn-sm shadow-none col-auto"
+                            type="submit">{{ __('Post comment') }}</button>
                     </form>
 
                     @foreach ($classwork->comments as $comment)
@@ -56,12 +56,12 @@
             @can('create', ['App\Models\Submission', $classwork])
                 <div class="col-md-4">
                     <div class="p-3 my-4 border shadow-sm rounded-1">
-                        <h4>Submission</h4>
+                        <h4>{{ __('Submission') }}</h4>
                         @if ($submissions->count())
                             <ul>
                         @endif
                         @forelse ($submissions as $submission)
-                            <li><a href="{{ route('submissions.file', $submission->id) }}">File
+                            <li><a href="{{ route('submissions.file', $submission->id) }}">{{ __('File') }}
                                     #{{ $loop->iteration }}</a></li>
                         @empty
                             <form action="{{ route('submissions.store', $classwork->id) }}" method="post"
@@ -70,11 +70,11 @@
                                 <div class="form-floating mb-3">
                                     <input type="file" @class(['form-control', 'is-invalid' => $errors->has('files')]) id="files" name="files[]"
                                         multiple accept="image/*,application/pdf,text/plain">
-                                    <label for="files">Upload Files</label>
+                                    <label for="files">{{ __('Upload Files') }}</label>
                                     <x-error field-name="files" />
                                 </div>
                                 <div>
-                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                    <button type="submit" class="btn btn-outline-primary">{{ __('Submit') }}</button>
                                 </div>
                             </form>
                         @endforelse

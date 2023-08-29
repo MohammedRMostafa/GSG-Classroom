@@ -35,7 +35,7 @@ require __DIR__ . '/auth.php';
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
 
 
     #==============================Classroom====================================

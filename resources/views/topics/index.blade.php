@@ -1,17 +1,17 @@
 <x-app-layout>
 
-    <x-slot:title>Topics</x-slot:title>
+    <x-slot:title>{{ __('Topics') }}</x-slot:title>
     <div class="container p-3 my-4 border shadow-sm rounded-1">
         <x-messages />
-        <h1 class="mb-4">Topics</h1>
+        <h1 class="mb-4">{{ __('Topics') }}</h1>
 
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Name</th>
-                        <th>Action</th>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,12 +23,13 @@
                             <td>
                                 <div class="d-flex">
                                     <a href="{{ route('classrooms.topics.edit', [$classroom, $topic->id]) }}"
-                                        class="btn btn-outline-dark mx-1">Edit</a>
+                                        class="btn btn-outline-dark mx-1">{{ __('Edit') }}</a>
                                     <form action="{{ route('classrooms.topics.destroy', [$classroom, $topic->id]) }}"
                                         method="POST">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="btn btn-outline-danger">delete</button>
+                                        <button type="submit"
+                                            class="btn btn-outline-danger">{{ __('Delete') }}</button>
                                     </form>
                                 </div>
                             </td>
@@ -37,7 +38,8 @@
                 </tbody>
             </table>
         </div>
-        <a href="{{ route('classrooms.topics.create', $classroom) }}" class="col-1 mx-1 mt-3 btn btn-success">Add</a>
+        <a href="{{ route('classrooms.topics.create', $classroom) }}"
+            class="col-1 mx-1 mt-3 btn btn-success">{{ __('Add') }}</a>
 
     </div>
 

@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <x-slot:title>Submissions</x-slot:title>
+    <x-slot:title>{{ __('Submissions') }}</x-slot:title>
 
     <div class="container">
 
@@ -8,8 +8,8 @@
             <x-messages />
 
             <h3>
-                Submissions
-                <small class="text-muted h5"> for Classwork {{ $classwork->title }}</small>
+                {{ __('Submissions') }}
+                <small class="text-muted h5"> {{ __('for Classwork') }} {{ $classwork->title }}</small>
             </h3>
             <hr>
             <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -29,7 +29,7 @@
                             <div class="accordion-body">
                                 <ul>
                                     @foreach ($group as $submission)
-                                        <li><a href="{{ route('submissions.file', $submission->id) }}">File
+                                        <li><a href="{{ route('submissions.file', $submission->id) }}">{{ __('File') }}
                                                 #{{ $loop->iteration }}</a></li>
                                     @endforeach
                                 </ul>
@@ -38,7 +38,7 @@
                     </div>
                 @empty
                     <div class="container p-3 border shadow-sm rounded-1">
-                        <p class="text-center fs-6 mb-0">No Submissions Yet</p>
+                        <p class="text-center fs-6 mb-0">{{ __('No Submissions Yet') }}</p>
                     </div>
                 @endforelse
             </div>

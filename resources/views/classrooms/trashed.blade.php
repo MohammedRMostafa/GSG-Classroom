@@ -1,9 +1,9 @@
 <x-app-layout>
 
-    <x-slot:title>Trashed Classrooms</x-slot:title>
+    <x-slot:title>{{ __('Trashed Classrooms') }}</x-slot:title>
     <div class="container p-3 my-4 border shadow-sm rounded-1">
         <x-messages />
-        <h2 class="mb-4">Trashed Classrooms</h2>
+        <h2 class="mb-4">{{ __('Trashed Classrooms') }}</h2>
         <div class="row">
             @foreach ($classrooms as $classroom)
                 <div class="col-md-3">
@@ -20,7 +20,8 @@
                                     <form action="{{ route('classroom.trashed.restore', $classroom->id) }}" method="POST">
                                         @csrf
                                         @method('put')
-                                        <button type="submit" class="btn btn-outline-success mx-1">restore</button>
+                                        <button type="submit"
+                                            class="btn btn-outline-success mx-1">{{ __('Restore') }}</button>
                                     </form>
                                 @endcan
                                 @can('forceDelete', $classroom)
@@ -28,7 +29,8 @@
                                         method="POST">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="btn btn-outline-danger mx-1">delete</button>
+                                        <button type="submit"
+                                            class="btn btn-outline-danger mx-1">{{ __('Delete') }}</button>
                                     </form>
                                 @endcan
                             </div>
@@ -37,7 +39,7 @@
                 </div>
             @endforeach
         </div>
-        <a href="{{ route('classrooms.index') }}" class="col-1 mx-2 mt-3 btn btn-success">Home</a>
+        <a href="{{ route('classrooms.index') }}" class="col-1 mx-2 mt-3 btn btn-success">{{ __('Home') }}</a>
 
     </div>
 
