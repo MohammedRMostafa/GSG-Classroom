@@ -44,6 +44,10 @@ class Classroom extends Model
     {
         return $this->hasMany(Topic::class);
     }
+    public function streams(): HasMany
+    {
+        return $this->hasMany(Stream::class);
+    }
 
     public function users(): BelongsToMany
     {

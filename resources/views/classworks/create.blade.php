@@ -2,7 +2,7 @@
 
     <x-slot:title>{{ __('Create Classwork') }}</x-slot:title>
     <div class="container p-3 my-4 border shadow-sm rounded-1">
-
+        <x-messages />
         <h2 class="mb-4">{{ __('Create Classwork') }}</h2>
 
         <form action="{{ route('classrooms.classworks.store', [$classroom->id, 'type' => $type]) }}" method="post">

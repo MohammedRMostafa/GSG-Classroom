@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ClassworkCreated;
 use App\Models\Classroom;
 use App\Models\Classwork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ClassworkController extends Controller
 {
@@ -75,9 +78,19 @@ class ClassworkController extends Controller
                 'due' => $request->input('due'),
             ],
         ]);
-        // dd($request);
-        $classwork = $classroom->classworks()->create($request->all());
-        $classwork->users()->attach($request->input('students'));
+
+        try {
+            DB::transaction(function () use ($classroom, $request) {
+
+                $classwork = $classroom->classworks()->create($request->all());
+                $classwork->users()->attach($request->input('students'));
+                // event(new ClassworkCreated($classwork));
+                ClassworkCreated::dispatch($classwork);
+            });
+        } catch (Throwable $th) {
+            return back()->with('Error', $th->getMessage());
+        }
+
 
         return redirect()->route('classrooms.classworks.index', $classroom->id)
             ->with('Add', 'Added Classwork Successfuly');
