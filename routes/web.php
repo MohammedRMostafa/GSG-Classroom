@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChangeLocaleController;
 use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -7,10 +8,14 @@ use App\Http\Controllers\ClassroomsController;
 use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TopicsController;
 use App\Http\Controllers\SubmissionController;
 use App\Models\Comment;
+use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -76,4 +81,13 @@ Route::middleware(['auth'])->group(function () {
     #================================Posts======================================
 
     Route::resource('classrooms.posts', PostController::class);
+
+    #================================locale=====================================
+
+    Route::post('locale', ChangeLocaleController::class)->name('locale');
+
+    #============================Notifications==================================
+
+    Route::get('notifications/{id}', [NotificationController::class, 'markAsRead'])->name('mark.as.read');
+    Route::get('notifications', [NotificationController::class, 'markAllAsRead'])->name('mark.all.as.read');
 });

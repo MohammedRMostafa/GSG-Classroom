@@ -15,14 +15,18 @@
                         class="nav-link px-2 link-secondary">{{ __('Classrooms') }}</a></li>
             </ul>
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                <input type="search" class="form-control" placeholder="{{ __('Search') }}..." aria-label="Search">
-            </form>
-            <select class="selectpicker me-md-3" data-width="fit">
-                <option>English</option>
-                <option>Español</option>
-            </select>
+            <x-user-notifications-list count="5" />
 
+
+            <div class="select-position">
+                <form action="{{ route('locale') }}" method="post">
+                    @csrf
+                    <select name="locale" onchange="this.form.submit()" class="me-md-3" data-width="fit">
+                        <option value="en" @selected(Auth::user()->locale == 'en')>English</option>
+                        <option value="ar" @selected(Auth::user()->locale == 'ar')>عربي</option>
+                    </select>
+                </form>
+            </div>
 
 
             <div class="dropdown text-end">

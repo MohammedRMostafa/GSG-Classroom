@@ -9,6 +9,10 @@
     integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
 </script>
 {{ $js ?? '' }}
+<script>
+    var classroomId;
+    const userId = "{{ Auth::id() }}";
+</script>
 @vite(['resources/js/app.js'])
 </body>
 

@@ -85,7 +85,7 @@
 
     <x-slot:js>
         <script>
-            const classroomId = "{{ $classroom->id }}";
+            classroomId = "{{ $classroom->id }}";
         </script>
     </x-slot:js>
 </x-app-layout>
